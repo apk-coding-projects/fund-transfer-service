@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use src\Accounts\Models\Account;
+use src\Clients\Models\Client;
 use src\CurrencyRates\RateImport\Services\CurrencyRateImport;
 
 class DatabaseSeeder extends Seeder
@@ -15,17 +16,15 @@ class DatabaseSeeder extends Seeder
     {
         /**
          * Seed currency rates
+         *
          * @var CurrencyRateImport $service
          */
-        $service = app(CurrencyRateImport::class);
-        $service->import();
+        //        $service = app(CurrencyRateImport::class);
+        //        $service->import();
 
-
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        Client::factory()
+            ->count(2)
+            ->has(Account::factory()->count(rand(0, 4)))
+            ->create();
     }
 }
