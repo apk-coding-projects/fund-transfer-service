@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use src\CurrencyRates\RateImport\Services\CurrencyRateImport;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,6 +13,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        /**
+         * Seed currency rates
+         * @var CurrencyRateImport $service
+         */
+        $service = app(CurrencyRateImport::class);
+        $service->import();
+
+
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([
