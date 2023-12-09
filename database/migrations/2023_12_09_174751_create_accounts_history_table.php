@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('accounts', function (Blueprint $table) {
+        Schema::create('accounts_history', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('client_id');
+            $table->unsignedBigInteger('account_id');
             $table->string('currency');
             $table->float('amount', 12);
             $table->timestamps();
 
-            $table->index(['client_id', 'currency']);
-            $table->index(['currency']);
+            $table->index(['account_id']);
+            $table->index(['created_at', 'updated_at']);
         });
     }
 
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('accounts');
+        Schema::dropIfExists('accounts_history');
     }
 };

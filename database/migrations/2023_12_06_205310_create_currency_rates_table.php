@@ -15,6 +15,9 @@ return new class extends Migration
             $table->float('rate', 12, 4, true);
             $table->string('date');
             $table->timestamps();
+
+            $table->index(['from', 'to', 'date']);
+            $table->index(['date']);
         });
     }
 

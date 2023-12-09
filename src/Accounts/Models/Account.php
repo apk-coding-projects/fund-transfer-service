@@ -6,6 +6,7 @@ use Database\Factories\AccountFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use src\Clients\Models\Client;
+use src\Transactions\Models\Transaction;
 
 /**
  * @property int $id
@@ -16,6 +17,7 @@ use src\Clients\Models\Client;
  * @property string $updated_at
  *
  * @property-read Client $client
+ * @property-read AccountsHistory[] $accountHistory
  */
 class Account extends Model
 {
@@ -28,8 +30,38 @@ class Account extends Model
         return new AccountFactory();
     }
 
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        // TODO check
+        static::saved(function(Account $account) {
+            AccountsHistory::create([
+                'account_id' => $account->id,
+                'currency' => $account->currency,
+                'amount' => $account->amount,
+            ]);
+        });
+    }
+
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function accountHistory()
+    {
+        return $this->hasMany(AccountsHistory::class, 'account_id', 'id');
+    }
+
+    public function sentTransactions()
+    {
+        return $this->hasMany(Transaction::class, 'sender_account_id', 'id');
+    }
+
+    public function recievedTransactions()
+    {
+        return $this->hasMany(Transaction::class, 'receiver_account_id', 'id');
     }
 }
