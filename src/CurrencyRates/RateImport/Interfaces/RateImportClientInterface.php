@@ -2,14 +2,11 @@
 
 namespace src\CurrencyRates\RateImport\Interfaces;
 
-use src\CurrencyRates\RateImport\Structures\BaseRateImportRequest;
 use src\CurrencyRates\RateImport\Structures\BaseRateImportResponse;
 
 interface RateImportClientInterface
 {
-    public function getRates(BaseRateImportRequest $request): BaseRateImportResponse;
+    public function getRates(string $date, string $sourceCurrency, array $targetCurrency): BaseRateImportResponse;
 
-//    public function getJsonResponseBody();
-//
-//    public function getClient();
+    public function getBaseUrl(string $path = ''): string;
 }

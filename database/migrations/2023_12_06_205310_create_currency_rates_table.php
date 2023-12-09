@@ -13,8 +13,8 @@ return new class extends Migration
             $table->string('from');
             $table->string('to');
             $table->float('rate', 12, 4, true);
-            $table->timestamp('date');
-            $table->timestamp('created_at');
+            $table->string('date');
+            $table->timestamps();
         });
     }
 
