@@ -25,8 +25,10 @@ class Transaction extends Model
     public $timestamps = true;
 
     public const STATUS_SUCCESS = 'success';
+    public const STATUS_PROCESSING = 'processing';
     public const STATUS_FAILURE = 'failure';
-    public const STATUSES = [self::STATUS_SUCCESS, self::STATUS_FAILURE];
+
+    public const STATUSES = [self::STATUS_SUCCESS, self::STATUS_PROCESSING, self::STATUS_FAILURE];
 
     /**
      * @var array
@@ -50,19 +52,4 @@ class Transaction extends Model
     {
         return new TransactionFactory();
     }
-
-//    public function toArray()
-//    {
-//        return [
-//          'id' => $this->id,
-//          'sender_account_id' => $this->sender_account_id,
-//          'receiver_account_id' => $this->receiver_account_id,
-//          'currency' => $this->currency,
-//          'amount' => $this->amount,
-//          'status' => $this->status,
-//          'created_at' => $this->created_at,
-//          'status' => $this->status,
-//        ];
-//    }
-
 }

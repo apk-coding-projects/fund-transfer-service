@@ -28,7 +28,7 @@ class ClientController extends BaseController
 
             return ResponseHelper::success(true, payload: $payload);
         } catch (Throwable $t) {
-            return ResponseHelper::failure(false, 'Something went wrong! Please try again.');
+            return ResponseHelper::failure('Something went wrong! Please try again.');
         }
     }
 }

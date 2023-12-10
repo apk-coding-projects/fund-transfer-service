@@ -6,9 +6,14 @@ namespace App\Http\Helpers;
 
 class ResponseHelper
 {
-    public static function success(bool $isSuccess = false, string $message = '', array $payload = []): array
-    {
+    public static function success(
+        bool $isSuccess = false,
+        string $message = '',
+        array $payload = [],
+        int $code = 200,
+    ): array {
         $response = [
+            'code' => $code,
             'success' => $isSuccess,
             'payload' => $payload,
         ];
@@ -20,10 +25,11 @@ class ResponseHelper
         return $response;
     }
 
-    public static function failure(bool $isSuccess = false, string $error = ''): array
+    public static function failure(string $error = '', int $code = 500): array
     {
         return [
-            'success' => $isSuccess,
+            'success' => false,
+            'code' => $code,
             'error' => $error,
         ];
     }

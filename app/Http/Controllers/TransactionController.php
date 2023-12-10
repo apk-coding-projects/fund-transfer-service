@@ -7,42 +7,36 @@ namespace App\Http\Controllers;
 use App\Http\Helpers\ResponseHelper;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
-use src\Accounts\Repositories\AccountRepository;
-use src\Transactions\Exceptions\AccountNotFoundException;
+use src\Transactions\Exceptions\TransactionException;
+use src\Transactions\Factories\FundTransferRequestFactory;
 use src\Transactions\Services\FundTransferTransactionService;
 use Throwable;
 
 class TransactionController extends BaseController
 {
     public function __construct(
-        private readonly FundTransferTransactionService $service,
-        private readonly AccountRepository $accountRepository,
+        private readonly FundTransferTransactionService $transactionService,
+        private readonly FundTransferRequestFactory $requestFactory,
     ) {
     }
 
-    public function makeTransaction(Request $request, int $accountId): array
+    public function makeTransaction(Request $request): array
     {
         try {
-            $senderAccountId = intval($request->input('senderAccountId', 0));
-            $receiverAccountId = intval($request->input('receiverAccountId', 0));
-            $amount = intval($request->input('amount', 0));
-            $currency = intval($request->input('currency', ''));
+            $senderId = intval($request->input('senderAccountId', 0));
+            $receiverId = intval($request->input('receiverAccountId', 0));
+            $amount = floatval($request->input('amount', 0));
+            $currency = strval($request->input('currency', ''));
 
-            $senderAccount = $this->accountRepository->getById($senderAccountId);
-            $receiverAccount = $this->accountRepository->getById($receiverAccountId);
-            if (!$senderAccount || !$receiverAccount) {
-                throw new AccountNotFoundException('Receiver or Sender Account is not found!');
-            }
+            $fundTransferRequest = $this->requestFactory->build($senderId, $receiverId, $currency, $amount);
 
-            if (!$transactions) {
-                return ResponseHelper::success(true, "No transactions found for account with ID: $accountId");
-            }
+            $this->transactionService->transfer($fundTransferRequest);
 
-            $payload = array_map(fn(Transaction $transaction) => $transaction->toArray(), $transactions);
-
-            return ResponseHelper::success(true, payload: $payload);
-        } catch (Throwable $t) {
-            return ResponseHelper::failure(false, 'Something went wrong! Please try again.');
+            return ResponseHelper::success(true, 'Funds transferred successfully!');
+        } catch (TransactionException $t) {
+            return ResponseHelper::failure($t->getMessage()); // safe to error return message, we set it by ourselves
+        } catch (Throwable) {
+            return ResponseHelper::failure('Something went wrong! Please try again.');
         }
     }
 }
