@@ -25,14 +25,19 @@ class Account extends Model
 
     public $timestamps = true;
 
+    /**
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+    ];
+
     protected static function newFactory()
     {
         return new AccountFactory();
     }
 
-    /**
-     * The "booted" method of the model.
-     */
     protected static function booted(): void
     {
         // TODO check
@@ -63,5 +68,12 @@ class Account extends Model
     public function recievedTransactions()
     {
         return $this->hasMany(Transaction::class, 'receiver_account_id', 'id');
+    }
+
+    public function toApiResponse(): array
+    {
+        return [
+
+        ];
     }
 }

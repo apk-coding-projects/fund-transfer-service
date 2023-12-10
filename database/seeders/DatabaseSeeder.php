@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use src\Accounts\Models\Account;
 use src\Clients\Models\Client;
 use src\CurrencyRates\RateImport\Services\CurrencyRateImport;
+use src\Transactions\Models\Transaction;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,8 +24,12 @@ class DatabaseSeeder extends Seeder
         //        $service->import();
 
         Client::factory()
-            ->count(2)
+            ->count(50)
             ->has(Account::factory()->count(rand(0, 4)))
+            ->create();
+
+        Transaction::factory()
+            ->count(5000)
             ->create();
     }
 }
