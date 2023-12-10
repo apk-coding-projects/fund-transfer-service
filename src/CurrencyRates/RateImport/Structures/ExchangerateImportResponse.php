@@ -6,9 +6,11 @@ namespace src\CurrencyRates\RateImport\Structures;
 
 class ExchangerateImportResponse extends BaseRateImportResponse
 {
-    public const RESPONSE_KEY_SUCCESS = 'success';
+    public const KEY_SUCCESS = 'success';
+    public const KEY_QUOTES = 'quotes';
 
     public function __construct(
+        public bool $isSuccess,
         public array $responseArray,
         public string $date,
         public string $source,

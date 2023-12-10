@@ -8,6 +8,11 @@ use src\Accounts\Models\Account;
 
 class AccountRepository
 {
+    public function getById(int $accountId): ?Account
+    {
+        return Account::where('id', $accountId)->first();
+    }
+
     /** @return Account[] */
     public function getByClientId(int $clientId): array
     {

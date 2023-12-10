@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,3 +19,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/clients/{client}/accounts', [ClientController::class, 'accounts']);
 
 Route::get('/accounts/{account}/transactions', [AccountController::class, 'transactions']);
+
+Route::post('/transactions', [TransactionController::class, 'makeTransaction']);

@@ -12,4 +12,18 @@ class CurrencyRateRepository
     {
         CurrencyRate::insert($data);
     }
+
+    public function getByDate(string $from, string $to, string $date): ?CurrencyRate
+    {
+        return CurrencyRate::where('from', $from)->andWhere('to', $to)->andWhere('date', $date)->first();
+    }
+
+    public function getLastRateByDate(string $from, string $to, string $date): ?CurrencyRate
+    {
+        return CurrencyRate::where('from', $from)
+            ->andWhere('to', $to)
+            ->andWhere('date', '<=', $date)
+            ->orderByDesc('id')
+            ->first();
+    }
 }

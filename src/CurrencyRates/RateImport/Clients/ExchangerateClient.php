@@ -18,19 +18,6 @@ class ExchangerateClient implements RateImportClientInterface
     /** @return ExchangerateImportResponse */
     public function getRates(string $date, string $sourceCurrency, array $targetCurrency): BaseRateImportResponse
     {
-        //TODo delete
-        $responseJson = RedisCacheHelper::get("testing_$date-$sourceCurrency");
-        if ($responseJson) {
-            $responseArray = json_decode($responseJson, true);
-
-            return new ExchangerateImportResponse(
-                $responseArray,
-                $date,
-                $sourceCurrency,
-                $responseArray['quotes'] ?? []
-            );
-        }
-
         $response = Http::get($this->getBaseUrl('historical'), [
             'access_key' => env('EXCHANGERATE_API_KEY'),
             'date' => $date,
@@ -39,13 +26,13 @@ class ExchangerateClient implements RateImportClientInterface
         ]);
 
         $responseArray = $response->json();
-        RedisCacheHelper::set("testing_$date-$sourceCurrency", json_encode($responseArray), 86400);//TODo delete
 
         return new ExchangerateImportResponse(
+            $responseArray[ExchangerateImportResponse::KEY_SUCCESS] ?? false,
             $responseArray,
             $date,
             $sourceCurrency,
-            $responseArray['quotes'] ?? []
+            $responseArray[ExchangerateImportResponse::KEY_QUOTES] ?? []
         );
     }
 

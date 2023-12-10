@@ -12,7 +12,12 @@ use src\CurrencyRates\Repositories\CurrencyRateRepository;
 
 class CurrencyRateImport
 {
-    public function __construct(private ExchangerateClient $client, private CurrencyRateRepository $rateRepository) { }
+    public function __construct(
+        private readonly ExchangerateClient $client,
+        private readonly CurrencyRateRepository $rateRepository,
+    )
+    {
+    }
 
     public function import(array $currenciesToImport = CurrencyRate::SUPPORTED_CURRENCIES, ?string $date = null): void
     {
@@ -29,25 +34,24 @@ class CurrencyRateImport
 
             $response = $this->client->getRates($date, $currencyFrom, $currenciesTo);
 
-            $isSuccess = $response->responseArray[ExchangerateImportResponse::RESPONSE_KEY_SUCCESS] ?? false;
-            if (!$isSuccess) {
+            if (!$response->isSuccess) {
                 continue; // Something went wrong, results are not returned
             }
 
-            $this->bulkSaveRecords($response, $currenciesToImport);
+            $this->bulkSaveRecords($response);
         }
 
         Log::info("Import ended for $date");
     }
 
-    private function bulkSaveRecords(ExchangerateImportResponse $response, array $importedCurrencies): void
+    private function bulkSaveRecords(ExchangerateImportResponse $response): void
     {
-        $dataToInsert = $this->prepareData($response, $importedCurrencies);
+        $dataToInsert = $this->prepareData($response);
 
         $this->rateRepository->batchInsert($dataToInsert);
     }
 
-    private function prepareData(ExchangerateImportResponse $response, array $importedCurrencies): array
+    private function prepareData(ExchangerateImportResponse $response): array
     {
         $currencyFrom = $response->source;
         $processedDate = $response->date;
