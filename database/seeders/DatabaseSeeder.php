@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use DateTime;
 use Illuminate\Database\Seeder;
 use src\Accounts\Models\Account;
 use src\Clients\Models\Client;
@@ -20,8 +21,13 @@ class DatabaseSeeder extends Seeder
          *
          * @var CurrencyRateImport $service
          */
-        //        $service = app(CurrencyRateImport::class);
-        //        $service->import();
+        $service = app(CurrencyRateImport::class);
+        $today = new DateTime(); // Today's date
+
+        for ($i = 0; $i < 15; $i++) {
+            $date = $today->modify('-1 day')->format('Y-m-d');
+            $service->import(date: $date);
+        }
 
         Client::factory()
             ->count(50)
