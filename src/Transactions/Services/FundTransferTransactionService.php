@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace src\Transactions\Services;
 
-use App\Http\Helpers\ResponseHelper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use src\Accounts\Services\AccountService;
+use src\Common\Helpers\CacheLockHelper;
 use src\CurrencyRates\Exceptions\RateNotFoundException;
 use src\CurrencyRates\Services\CurrencyConversionService;
 use src\Transactions\Exceptions\NegativeAmountException;
@@ -23,6 +23,9 @@ use Throwable;
 
 class FundTransferTransactionService implements TransactionInterface
 {
+    private const LOCK_KEY_PREFIX = 'FUND_TRANSFER';
+    const SECONDS_ONE_MINUTE = 60;
+
     public function __construct(
         private readonly TransactionValidationService $validationService,
         private readonly AccountService $accountService,
@@ -45,14 +48,20 @@ class FundTransferTransactionService implements TransactionInterface
         $transaction = $this->transactionFactory->preparePending($request);
         $this->transactionRepository->save($transaction);
 
+        $lockKey = $this->getLockKey($request);
+        CacheLockHelper::acquire($lockKey, self::SECONDS_ONE_MINUTE);
         DB::beginTransaction();
+
         try {
             $this->performTransfer($request);
             $this->finalize($transaction, Transaction::STATUS_SUCCESS);
 
             DB::commit();
+            CacheLockHelper::release($lockKey);
         } catch (Throwable $throwable) {
             DB::rollBack();
+            CacheLockHelper::release($lockKey);
+
             Log::error($throwable->getTraceAsString());
 
             $this->finalize($transaction, Transaction::STATUS_FAILURE);
@@ -94,7 +103,7 @@ class FundTransferTransactionService implements TransactionInterface
         $this->validationService->validate($request);
     }
 
-    public function finalize(Transaction $transaction, string $status): void
+    private function finalize(Transaction $transaction, string $status): void
     {
         $transaction->status = $status;
         $this->transactionRepository->save($transaction);
@@ -105,12 +114,26 @@ class FundTransferTransactionService implements TransactionInterface
      * @throws NegativeAmountException
      * @throws NotEnoughBalanceException
      */
-    public function performTransfer(FundTransferRequest $request): void
+    private function performTransfer(FundTransferRequest $request): void
     {
         $amountToAdd = $request->amount;
         $amountToSubtract = $this->getAmount($request);
 
         $this->accountService->subtractFromAccount($request->senderAccount, $amountToSubtract);
         $this->accountService->addToAccount($request->receiverAccount, $amountToAdd);
+    }
+
+    private function getLockKey(FundTransferRequest $request): string
+    {
+        return join(
+            '_',
+            [
+                self::LOCK_KEY_PREFIX,
+                $request->senderAccount->id,
+                $request->receiverAccount->id,
+                $request->amount,
+                $request->currency,
+            ]
+        );
     }
 }

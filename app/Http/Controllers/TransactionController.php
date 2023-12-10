@@ -36,7 +36,7 @@ class TransactionController extends BaseController
         } catch (TransactionException $t) {
             return ResponseHelper::failure($t->getMessage()); // safe to error return message, we set it by ourselves
         } catch (Throwable) {
-            return ResponseHelper::failure('Something went wrong! Please try again.');
+            return ResponseHelper::failure('Something went wrong! Please try again later.');
         }
     }
 }
