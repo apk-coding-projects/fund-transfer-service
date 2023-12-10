@@ -39,5 +39,7 @@ class CurrencyRate extends Model
      */
     protected $table = 'currency_rates';
 
+    protected $guarded = [];
+
     public $timestamps = true;
 }

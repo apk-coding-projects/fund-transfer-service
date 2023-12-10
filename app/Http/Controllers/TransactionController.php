@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Helpers\ResponseHelper;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use src\CurrencyRates\Services\CurrencyConversionService;
 use src\Transactions\Exceptions\TransactionException;
 use src\Transactions\Factories\FundTransferRequestFactory;
 use src\Transactions\Services\FundTransferTransactionService;
@@ -35,7 +36,7 @@ class TransactionController extends BaseController
             return ResponseHelper::success(true, 'Funds transferred successfully!');
         } catch (TransactionException $t) {
             return ResponseHelper::failure($t->getMessage()); // safe to error return message, we set it by ourselves
-        } catch (Throwable) {
+        } catch (Throwable $t) {
             return ResponseHelper::failure('Something went wrong! Please try again later.');
         }
     }

@@ -15,14 +15,14 @@ class CurrencyRateRepository
 
     public function getByDate(string $from, string $to, string $date): ?CurrencyRate
     {
-        return CurrencyRate::where('from', $from)->andWhere('to', $to)->andWhere('date', $date)->first();
+        return CurrencyRate::where('from', $from)->where('to', $to)->where('date', $date)->first();
     }
 
     public function getLastRateByDate(string $from, string $to, string $date): ?CurrencyRate
     {
         return CurrencyRate::where('from', $from)
-            ->andWhere('to', $to)
-            ->andWhere('date', '<=', $date)
+            ->where('to', $to)
+            ->where('date', '<=', $date)
             ->orderByDesc('id')
             ->first();
     }

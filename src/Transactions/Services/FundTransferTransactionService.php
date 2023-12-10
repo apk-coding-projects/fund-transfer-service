@@ -49,10 +49,11 @@ class FundTransferTransactionService implements TransactionInterface
         $this->transactionRepository->save($transaction);
 
         $lockKey = $this->getLockKey($request);
-        CacheLockHelper::acquire($lockKey, self::SECONDS_ONE_MINUTE);
-        DB::beginTransaction();
 
         try {
+            DB::beginTransaction();
+            CacheLockHelper::acquire($lockKey, self::SECONDS_ONE_MINUTE);
+
             $this->performTransfer($request);
             $this->finalize($transaction, Transaction::STATUS_SUCCESS);
 
