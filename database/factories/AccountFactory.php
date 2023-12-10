@@ -7,9 +7,6 @@ use Illuminate\Support\Arr;
 use src\Accounts\Models\Account;
 use src\CurrencyRates\Models\CurrencyRate;
 
-/**
- * @extends Factory<\App\Models\Model>
- */
 class AccountFactory extends Factory
 {
     protected $model = Account::class;

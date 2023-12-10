@@ -59,21 +59,4 @@ class Account extends Model
     {
         return $this->hasMany(AccountsHistory::class, 'account_id', 'id');
     }
-
-    public function sentTransactions()
-    {
-        return $this->hasMany(Transaction::class, 'sender_account_id', 'id');
-    }
-
-    public function recievedTransactions()
-    {
-        return $this->hasMany(Transaction::class, 'receiver_account_id', 'id');
-    }
-
-    public function toApiResponse(): array
-    {
-        return [
-
-        ];
-    }
 }

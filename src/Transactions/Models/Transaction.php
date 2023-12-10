@@ -43,7 +43,7 @@ class Transaction extends Model
         return $this->belongsTo(Account::class, 'sender_account_id', 'id');
     }
 
-    public function recieverAccount()
+    public function receiverAccount()
     {
         return $this->belongsTo(Account::class, 'receiver_account_id', 'id');
     }

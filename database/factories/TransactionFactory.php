@@ -8,9 +8,6 @@ use src\Accounts\Models\Account;
 use src\CurrencyRates\Models\CurrencyRate;
 use src\Transactions\Models\Transaction;
 
-/**
- * @extends Factory<\App\Models\Model>
- */
 class TransactionFactory extends Factory
 {
     protected $model = Transaction::class;
