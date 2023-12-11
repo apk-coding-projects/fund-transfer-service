@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\RateImport\Services;
+namespace Tests\Feature\CurrencyRates\Services;
 
 use DateTime;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -37,6 +37,13 @@ class CurrencyConversionServiceTest extends TestCase
         $rate = $this->service->getLiveRate(date('Y-m-d'), 'USD', 'EUR');
 
         self::assertNull($rate);
+    }
+
+    public function testGetLiveRate_withSameCurrency_returnsRateOnr()
+    {
+        $rate = $this->service->getLiveRate(date('Y-m-d'), 'USD', 'USD');
+
+        self::assertEquals(1, $rate->rate);
     }
 
     public function testGetLiveRate_withRateFetched_returnsCorrectCurrencyRate()

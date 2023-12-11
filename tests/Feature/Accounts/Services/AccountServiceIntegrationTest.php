@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Accounts;
+namespace Tests\Feature\Accounts\Services;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use src\Accounts\Services\AccountService;
