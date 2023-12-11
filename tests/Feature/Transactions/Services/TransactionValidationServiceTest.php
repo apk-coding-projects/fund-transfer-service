@@ -20,8 +20,6 @@ class TransactionValidationServiceTest extends TestCase
 {
     use DatabaseMigrations;
 
-    private const CACHE_PREFIX_CURRENCY_RATE = 'CACHED_CURRENCY_RATES';
-
     private TransactionValidationService $service;
 
     protected function setUp(): void
@@ -29,6 +27,15 @@ class TransactionValidationServiceTest extends TestCase
         parent::setUp();
 
         $this->service = app(TransactionValidationService::class);
+    }
+
+    public function testValidate_withValidData_processes(): void
+    {
+        $request = $this->getRequest(1, 'USD');
+
+        $this->service->validate($request);
+
+        self::expectNotToPerformAssertions();
     }
 
     public function testValidate_withNotSupportedCurrency_throwsException(): void
@@ -79,8 +86,6 @@ class TransactionValidationServiceTest extends TestCase
         $request = new FundTransferRequest(10000000, 'AUD', $sender, $receiver);
 
         $currencyRate = CurrencyRateHelper::build('USD', 'AUD', date('Y-m-d'), 0.89);
-
-        // returns rate
         Redis::shouldReceive('get')
             ->once()
             ->andReturn(json_encode($currencyRate->toArray()));
@@ -97,10 +102,5 @@ class TransactionValidationServiceTest extends TestCase
         $receiver = AccountHelper::build(1400);
 
         return new FundTransferRequest($amount, $currency, $sender, $receiver);
-    }
-
-    private function getCacheKey(string $from, string $to, string $date): string
-    {
-        return join('_', [self::CACHE_PREFIX_CURRENCY_RATE, $from, $to, $date]);
     }
 }

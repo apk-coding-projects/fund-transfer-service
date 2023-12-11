@@ -75,7 +75,7 @@ class FundTransferTransactionService implements TransactionInterface
      * @param  FundTransferRequest  $request
      * @throws RateNotFoundException
      */
-    public function getAmount(TransactionRequest $request): float
+    public function getSenderTransferAmount(TransactionRequest $request): float
     {
         $amount = $request->amount;
         $senderAccount = $request->senderAccount;
@@ -118,7 +118,7 @@ class FundTransferTransactionService implements TransactionInterface
     private function performTransfer(FundTransferRequest $request): void
     {
         $amountToAdd = $request->amount;
-        $amountToSubtract = $this->getAmount($request);
+        $amountToSubtract = $this->getSenderTransferAmount($request);
 
         $this->accountService->subtractFromAccount($request->senderAccount, $amountToSubtract);
         $this->accountService->addToAccount($request->receiverAccount, $amountToAdd);

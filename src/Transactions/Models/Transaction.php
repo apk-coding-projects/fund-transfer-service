@@ -17,6 +17,9 @@ use src\Accounts\Models\AccountsHistory;
  * @property string $status
  * @property string $created_at
  * @property string $updated_at
+ *
+ * @property-read Account $senderAccount
+ * @property-read Account $receiverAccount
  */
 class Transaction extends Model
 {
