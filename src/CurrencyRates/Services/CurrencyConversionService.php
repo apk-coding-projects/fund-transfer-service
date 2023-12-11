@@ -7,6 +7,7 @@ namespace src\CurrencyRates\Services;
 use Illuminate\Support\Facades\Log;
 use src\Common\Helpers\RedisCacheHelper;
 use src\CurrencyRates\Exceptions\RateNotFoundException;
+use src\CurrencyRates\Factories\CurrencyRateFactory;
 use src\CurrencyRates\Models\CurrencyRate;
 use src\CurrencyRates\RateImport\Clients\ExchangerateClient;
 use src\CurrencyRates\Repositories\CurrencyRateRepository;
@@ -20,6 +21,7 @@ class CurrencyConversionService
     public function __construct(
         private readonly CurrencyRateRepository $currencyRepository,
         private readonly ExchangerateClient $client,
+        private readonly CurrencyRateFactory $rateFactory,
     ) {
     }
 
@@ -81,6 +83,10 @@ class CurrencyConversionService
 
     public function getLiveRate(string $date, string $from, string $to): ?CurrencyRate
     {
+        if ($from === $to) {
+            return $this->rateFactory->build($from, $to, $date, 1); // USD to USD is always 1
+        }
+
         try {
             $response = $this->client->getRates($date, $from, [$to]);
 
@@ -88,14 +94,10 @@ class CurrencyConversionService
                 return null;
             }
 
-            $rate = new CurrencyRate();
-            $rate->from = $from;
-            $rate->to = $to;
-            $rate->date = $date;
-            $rate->rate = $response->rates[array_key_first($response->rates)];
+            $rateValue = $response->rates[array_key_first($response->rates)];
 
-            return $rate;
-        }catch (Throwable $t) {
+            return $this->rateFactory->build($from, $to, $date, $rateValue);
+        } catch (Throwable $t) {
             Log::error($t->getTraceAsString());
 
             return null;

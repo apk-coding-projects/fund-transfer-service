@@ -6,7 +6,27 @@ namespace Tests\Feature\RateImport\Helpers;
 
 class RateImportHelper
 {
-    public static function getFakeSuccessResponse($currency = 'USD'): array
+    public static function getOneRateSuccessResponse(
+        string $currency = 'USD',
+        string $toCurrency = 'GBP',
+        float $rate = 0.79,
+    ): array {
+        return [
+            'success' => true,
+            'terms' => 'https://currencylayer.com/terms',
+            'privacy' => 'https://currencylayer.com/privacy',
+            'historical' => true,
+            'date' => date('Y-m-d'),
+            'timestamp' => 1702242784,
+            'source' => $currency,
+            'quotes' =>
+                [
+                    $currency . $toCurrency => $rate,
+                ],
+        ];
+    }
+
+    public static function getFakeSuccessResponse(string $currency = 'USD'): array
     {
         return [
             'success' => true,

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RateImport\Services;
+namespace Tests\Feature\RateImport\Services;
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Http;
