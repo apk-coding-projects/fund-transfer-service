@@ -14,11 +14,9 @@ class TransactionRepository
         $transaction->save();
     }
 
-    /** @return Account[] */
-    public function getPaginatedByAccountId(int $accountId, int $limit, int $offset): array
+    public function getPaginatedByAccountId(int $accountId, int $limit = 0, int $offset = 0): array
     {
-        $query = Transaction::
-        where('receiver_account_id', $accountId)
+        $query = Transaction::where('receiver_account_id', $accountId)
             ->orWhere('sender_account_id', $accountId)
             ->orderByDesc('id');
 

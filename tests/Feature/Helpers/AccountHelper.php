@@ -9,11 +9,14 @@ use src\CurrencyRates\Models\CurrencyRate;
 
 class AccountHelper
 {
-    public static function build(float $amount = 10.50, bool $shouldSave = true): Account
-    {
+    public static function build(
+        float $amount = 10.50,
+        bool $shouldSave = true,
+        string $currency = CurrencyRate::CURRENCY_USD,
+    ): Account {
         $account = new Account();
-        $account->client_id = rand(1,100);
-        $account->currency = CurrencyRate::CURRENCY_USD;
+        $account->client_id = rand(1, 100);
+        $account->currency = $currency;
         $account->amount = $amount;
 
         if ($shouldSave) {

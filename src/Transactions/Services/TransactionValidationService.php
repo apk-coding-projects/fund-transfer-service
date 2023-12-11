@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace src\Transactions\Services;
 
 use src\Accounts\Models\Account;
-use src\Accounts\Repositories\AccountRepository;
 use src\CurrencyRates\Exceptions\RateNotFoundException;
 use src\CurrencyRates\Models\CurrencyRate;
 use src\CurrencyRates\Services\CurrencyConversionService;
