@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use src\CurrencyRates\RateImport\Services\CurrencyRateImport;
+use src\CurrencyRates\RateImport\Services\CurrencyRateImportService;
 
 class RateImport extends Command
 {
@@ -27,9 +27,9 @@ class RateImport extends Command
     public function handle()
     {
         /**
-         * @var CurrencyRateImport $service
+         * @var CurrencyRateImportService $service
          */
-        $service = app(CurrencyRateImport::class);
+        $service = app(CurrencyRateImportService::class);
         $service->import();
     }
 }

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace src\CurrencyRates\RateImport\Clients;
 
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Http;
-use src\Common\Helpers\RedisCacheHelper;
 use src\CurrencyRates\RateImport\Interfaces\RateImportClientInterface;
 use src\CurrencyRates\RateImport\Structures\BaseRateImportResponse;
 use src\CurrencyRates\RateImport\Structures\ExchangerateImportResponse;
@@ -18,7 +16,7 @@ class ExchangerateClient implements RateImportClientInterface
     /** @return ExchangerateImportResponse */
     public function getRates(string $date, string $sourceCurrency, array $targetCurrency): BaseRateImportResponse
     {
-        $response = Http::get($this->getBaseUrl('historical'), [
+        $response = Http::get($this->buildUrl('historical'), [
             'access_key' => env('EXCHANGERATE_API_KEY'),
             'date' => $date,
             'source' => $sourceCurrency,
@@ -36,7 +34,7 @@ class ExchangerateClient implements RateImportClientInterface
         );
     }
 
-    public function getBaseUrl(string $path = ''): string
+    public function buildUrl(string $path = ''): string
     {
         return 'http://api.exchangerate.host/' . $path;
     }

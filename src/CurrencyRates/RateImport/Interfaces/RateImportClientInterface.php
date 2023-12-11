@@ -8,5 +8,5 @@ interface RateImportClientInterface
 {
     public function getRates(string $date, string $sourceCurrency, array $targetCurrency): BaseRateImportResponse;
 
-    public function getBaseUrl(string $path = ''): string;
+    public function buildUrl(string $path = ''): string;
 }

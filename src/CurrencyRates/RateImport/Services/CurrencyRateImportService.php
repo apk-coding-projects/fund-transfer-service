@@ -9,18 +9,27 @@ use src\CurrencyRates\Models\CurrencyRate;
 use src\CurrencyRates\RateImport\Clients\ExchangerateClient;
 use src\CurrencyRates\RateImport\Structures\ExchangerateImportResponse;
 use src\CurrencyRates\Repositories\CurrencyRateRepository;
+use Throwable;
 
-class CurrencyRateImport
+class CurrencyRateImportService
 {
+    private const MIN_CURRENCY_COUNT_TO_IMPORT = 2;
+
     public function __construct(
         private readonly ExchangerateClient $client,
         private readonly CurrencyRateRepository $rateRepository,
-    )
-    {
+    ) {
     }
 
     public function import(array $currenciesToImport = CurrencyRate::SUPPORTED_CURRENCIES, ?string $date = null): void
     {
+        if (count($currenciesToImport) < self::MIN_CURRENCY_COUNT_TO_IMPORT) {
+            // not possible to import 0 currencies OR 1, for example, USD to USD, its always equals to 1
+            Log::info("Import ended for $date - cannot import less than two currencies");
+
+            return;
+        }
+
         $date = $date ?: date(ExchangerateClient::DATE_FORMAT);
 
         Log::info("Import started for $date, currencies:" . join(',', $currenciesToImport));
@@ -30,15 +39,20 @@ class CurrencyRateImport
          * Therefore we have to request for each source currency separately (potential N request)
          */
         foreach ($currenciesToImport as $currencyFrom) {
-            $currenciesTo = array_diff($currenciesToImport, [$currencyFrom]);
+            try {
+                $currenciesTo = array_diff($currenciesToImport, [$currencyFrom]);
 
-            $response = $this->client->getRates($date, $currencyFrom, $currenciesTo);
+                $response = $this->client->getRates($date, $currencyFrom, $currenciesTo);
 
-            if (!$response->isSuccess) {
-                continue; // Something went wrong, results are not returned
+                if (!$response->isSuccess) {
+                    continue; // Something went wrong, results are not returned
+                }
+
+                $this->bulkSaveRecords($response);
+            } catch (Throwable $e) {
+                Log::error($e->getTraceAsString());
+                continue;
             }
-
-            $this->bulkSaveRecords($response);
         }
 
         Log::info("Import ended for $date");

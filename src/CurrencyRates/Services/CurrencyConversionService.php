@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace src\CurrencyRates\Services;
 
+use Illuminate\Support\Facades\Log;
 use src\Common\Helpers\RedisCacheHelper;
 use src\CurrencyRates\Exceptions\RateNotFoundException;
 use src\CurrencyRates\Models\CurrencyRate;
 use src\CurrencyRates\RateImport\Clients\ExchangerateClient;
 use src\CurrencyRates\Repositories\CurrencyRateRepository;
+use Throwable;
 
 class CurrencyConversionService
 {
@@ -79,19 +81,25 @@ class CurrencyConversionService
 
     public function getLiveRate(string $date, string $from, string $to): ?CurrencyRate
     {
-        $response = $this->client->getRates($date, $from, [$to]);
+        try {
+            $response = $this->client->getRates($date, $from, [$to]);
 
-        if (!$response->isSuccess) {
+            if (!$response->isSuccess) {
+                return null;
+            }
+
+            $rate = new CurrencyRate();
+            $rate->from = $from;
+            $rate->to = $to;
+            $rate->date = $date;
+            $rate->rate = $response->rates[array_key_first($response->rates)];
+
+            return $rate;
+        }catch (Throwable $t) {
+            Log::error($t->getTraceAsString());
+
             return null;
         }
-
-        $rate = new CurrencyRate();
-        $rate->from = $from;
-        $rate->to = $to;
-        $rate->date = $date;
-        $rate->rate = $response->rates[array_key_first($response->rates)];
-
-        return $rate;
     }
 
     private function getKey(string $from, string $to, string $date): string

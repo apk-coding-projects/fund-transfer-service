@@ -7,10 +7,8 @@ namespace App\Http\Controllers;
 use App\Http\Helpers\ResponseHelper;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
-use src\Accounts\Models\Account;
-use src\Accounts\Repositories\AccountRepository;
 use src\Transactions\Models\Transaction;
-use src\Transactions\Transactions\TransactionRepository;
+use src\Transactions\Repositories\TransactionRepository;
 use Throwable;
 
 class AccountController extends BaseController

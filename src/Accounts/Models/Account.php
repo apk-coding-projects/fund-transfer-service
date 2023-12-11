@@ -5,8 +5,9 @@ namespace src\Accounts\Models;
 use Database\Factories\AccountFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use src\Clients\Models\Client;
-use src\Transactions\Models\Transaction;
 
 /**
  * @property int $id
@@ -33,7 +34,7 @@ class Account extends Model
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
 
-    protected static function newFactory()
+    protected static function newFactory(): AccountFactory
     {
         return new AccountFactory();
     }
@@ -50,12 +51,12 @@ class Account extends Model
         });
     }
 
-    public function client()
+    public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
     }
 
-    public function accountHistory()
+    public function accountHistory(): HasMany
     {
         return $this->hasMany(AccountsHistory::class, 'account_id', 'id');
     }
