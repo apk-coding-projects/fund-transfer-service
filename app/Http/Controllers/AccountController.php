@@ -22,6 +22,10 @@ class AccountController extends BaseController
             $limit = intval($request->input('limit', 0));
             $offset = intval($request->input('offset', 0));
 
+            if ($limit === 0) {
+                return ResponseHelper::success(true, "To get transactions increase limit to be more than 0");
+            }
+
             $transactions = $this->transactionRepository->getPaginatedByAccountId($accountId, $limit, $offset);
             if (!$transactions) {
                 return ResponseHelper::success(true, "No transactions found for account with ID: $accountId");
