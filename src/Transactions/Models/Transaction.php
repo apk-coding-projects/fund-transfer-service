@@ -6,7 +6,6 @@ use Database\Factories\TransactionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use src\Accounts\Models\Account;
-use src\Accounts\Models\AccountsHistory;
 
 /**
  * @property int $id

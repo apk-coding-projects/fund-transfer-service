@@ -59,35 +59,11 @@ class FundTransferTransactionService implements TransactionInterface
             $this->endProcessing($lockKey, false);
         } catch (Throwable $throwable) {
             $this->endProcessing($lockKey, true);
-
-            Log::error($throwable->getTraceAsString());
-
             $this->finalize($transaction, Transaction::STATUS_FAILURE);
+            Log::error($throwable->getTraceAsString());
 
             throw $throwable;
         }
-    }
-
-    /**
-     * @param  FundTransferRequest  $request
-     * @throws RateNotFoundException
-     */
-    public function getSenderTransferAmount(TransactionRequest $request): float
-    {
-        $amount = $request->amount;
-        $senderAccount = $request->senderAccount;
-        $receiverAccount = $request->receiverAccount;
-
-        if ($senderAccount->currency !== $receiverAccount->currency) {
-            $amount = $this->conversionService->convert(
-                $receiverAccount->currency,
-                $senderAccount->currency,
-                date('Y-m-d'),
-                $request->amount
-            );
-        }
-
-        return $amount;
     }
 
     /**
@@ -101,10 +77,21 @@ class FundTransferTransactionService implements TransactionInterface
         $this->validationService->validate($request);
     }
 
-    private function finalize(Transaction $transaction, string $status): void
+    /**
+     * @param  FundTransferRequest  $request
+     * @throws RateNotFoundException
+     */
+    public function getSenderTransferAmount(TransactionRequest $request): float
     {
-        $transaction->status = $status;
-        $this->transactionRepository->save($transaction);
+        $amount = $request->amount;
+        $senderCurrency = $request->senderAccount->currency;
+        $receiverCurrency = $request->receiverAccount->currency;
+
+        if ($senderCurrency === $receiverCurrency) {
+            return $amount;
+        }
+
+        return $this->conversionService->convert($receiverCurrency, $senderCurrency, date('Y-m-d'), $amount);
     }
 
     /**
@@ -119,6 +106,12 @@ class FundTransferTransactionService implements TransactionInterface
 
         $this->accountService->subtractFromAccount($request->senderAccount, $amountToSubtract);
         $this->accountService->addToAccount($request->receiverAccount, $amountToAdd);
+    }
+
+    private function finalize(Transaction $transaction, string $status): void
+    {
+        $transaction->status = $status;
+        $this->transactionRepository->save($transaction);
     }
 
     private function getLockKey(FundTransferRequest $request): string

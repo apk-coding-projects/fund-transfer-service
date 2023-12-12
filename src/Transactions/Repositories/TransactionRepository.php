@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace src\Transactions\Repositories;
 
-use src\Accounts\Models\Account;
 use src\Transactions\Models\Transaction;
 
 class TransactionRepository

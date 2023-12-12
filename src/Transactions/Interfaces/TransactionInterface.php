@@ -8,7 +8,7 @@ interface TransactionInterface
 {
     public function transfer(TransactionRequest $request): void;
 
-    public function getSenderTransferAmount(TransactionRequest $request): float;
-
     public function validate(TransactionRequest $request): void;
+
+    public function getSenderTransferAmount(TransactionRequest $request): float;
 }
