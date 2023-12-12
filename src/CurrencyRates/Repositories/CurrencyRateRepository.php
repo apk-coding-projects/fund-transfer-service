@@ -18,6 +18,7 @@ class CurrencyRateRepository
         return CurrencyRate::where('from', $from)->where('to', $to)->where('date', $date)->first();
     }
 
+    /** Get latest possible rate by date. If rate is not saved for searched date, it will return closest to that date */
     public function getLastRateByDate(string $from, string $to, string $date): ?CurrencyRate
     {
         return CurrencyRate::where('from', $from)

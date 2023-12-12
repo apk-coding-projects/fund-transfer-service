@@ -41,7 +41,6 @@ class Account extends Model
 
     protected static function booted(): void
     {
-        // TODO check
         static::saved(function(Account $account) {
             AccountsHistory::create([
                 'account_id' => $account->id,

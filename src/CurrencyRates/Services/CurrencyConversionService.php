@@ -34,6 +34,8 @@ class CurrencyConversionService
     }
 
     /**
+     * Use this for general purpose Currency conversions, has fallbacks and cache
+     *
      * 1) try getting from cache
      * 2) Try getting historical to escape 3rd party API calls
      * 3) Try calling an API to get live rate
@@ -89,7 +91,6 @@ class CurrencyConversionService
 
         try {
             $response = $this->client->getRates($date, $from, [$to]);
-
             if (!$response->isSuccess) {
                 return null;
             }

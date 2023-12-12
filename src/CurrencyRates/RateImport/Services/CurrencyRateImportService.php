@@ -23,16 +23,14 @@ class CurrencyRateImportService
 
     public function import(array $currenciesToImport = CurrencyRate::SUPPORTED_CURRENCIES, ?string $date = null): void
     {
+        $date = $date ?: date(ExchangerateClient::DATE_FORMAT);
+        Log::info("Import started for $date, currencies:" . join(',', $currenciesToImport));
+
         if (count($currenciesToImport) < self::MIN_CURRENCY_COUNT_TO_IMPORT) {
-            // not possible to import 0 currencies OR 1, for example, USD to USD, its always equals to 1
             Log::info("Import ended for $date - cannot import less than two currencies");
 
-            return;
+            return; // not possible to import 0 currencies OR 1, for example, USD to USD, its always equals to 1
         }
-
-        $date = $date ?: date(ExchangerateClient::DATE_FORMAT);
-
-        Log::info("Import started for $date, currencies:" . join(',', $currenciesToImport));
 
         /*
          * ExchangerateClient accepts only one source currency, but multiple currencies to get rates to
@@ -43,7 +41,6 @@ class CurrencyRateImportService
                 $currenciesTo = array_diff($currenciesToImport, [$currencyFrom]);
 
                 $response = $this->client->getRates($date, $currencyFrom, $currenciesTo);
-
                 if (!$response->isSuccess) {
                     continue; // Something went wrong, results are not returned
                 }

@@ -7,6 +7,7 @@ namespace src\Transactions\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use src\Accounts\Services\AccountService;
+use src\Common\Exceptions\LockAlreadyAcquiredException;
 use src\Common\Helpers\CacheLockHelper;
 use src\CurrencyRates\Exceptions\RateNotFoundException;
 use src\CurrencyRates\Services\CurrencyConversionService;
@@ -24,7 +25,7 @@ use Throwable;
 class FundTransferTransactionService implements TransactionInterface
 {
     private const LOCK_KEY_PREFIX = 'FUND_TRANSFER';
-    const SECONDS_ONE_MINUTE = 60;
+    private const SECONDS_ONE_MINUTE = 60;
 
     public function __construct(
         private readonly TransactionValidationService $validationService,
@@ -43,25 +44,21 @@ class FundTransferTransactionService implements TransactionInterface
      */
     public function transfer(TransactionRequest $request): void
     {
-        $this->validate($request);
-
         $transaction = $this->transactionFactory->preparePending($request);
         $this->transactionRepository->save($transaction);
 
         $lockKey = $this->getLockKey($request);
 
         try {
-            DB::beginTransaction();
-            CacheLockHelper::acquire($lockKey, self::SECONDS_ONE_MINUTE);
+            $this->startProcessing($lockKey);
 
             $this->performTransfer($request);
+
             $this->finalize($transaction, Transaction::STATUS_SUCCESS);
 
-            DB::commit();
-            CacheLockHelper::release($lockKey);
+            $this->endProcessing($lockKey, false);
         } catch (Throwable $throwable) {
-            DB::rollBack();
-            CacheLockHelper::release($lockKey);
+            $this->endProcessing($lockKey, true);
 
             Log::error($throwable->getTraceAsString());
 
@@ -136,5 +133,23 @@ class FundTransferTransactionService implements TransactionInterface
                 $request->currency,
             ]
         );
+    }
+
+    /**  @throws LockAlreadyAcquiredException */
+    private function startProcessing(string $lockKey): void
+    {
+        DB::beginTransaction();
+        CacheLockHelper::acquire($lockKey, self::SECONDS_ONE_MINUTE);
+    }
+
+    private function endProcessing(string $lockKey, bool $shouldRollback): void
+    {
+        if ($shouldRollback) {
+            DB::rollBack();
+        } else {
+            DB::commit();
+        }
+
+        CacheLockHelper::release($lockKey);
     }
 }

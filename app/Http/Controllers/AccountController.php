@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Helpers\ResponseHelper;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Log;
 use src\Transactions\Models\Transaction;
 use src\Transactions\Repositories\TransactionRepository;
 use Throwable;
@@ -22,7 +23,6 @@ class AccountController extends BaseController
             $offset = intval($request->input('offset', 0));
 
             $transactions = $this->transactionRepository->getPaginatedByAccountId($accountId, $limit, $offset);
-
             if (!$transactions) {
                 return ResponseHelper::success(true, "No transactions found for account with ID: $accountId");
             }
@@ -31,6 +31,8 @@ class AccountController extends BaseController
 
             return ResponseHelper::success(true, payload: $payload);
         } catch (Throwable $t) {
+            Log::error($t->getTraceAsString());
+
             return ResponseHelper::failure('Something went wrong! Please try again.');
         }
     }
