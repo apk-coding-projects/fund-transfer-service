@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 use src\Accounts\Models\Account;
 use src\CurrencyRates\Models\CurrencyRate;
+use src\CurrencyRates\Structures\Currency;
 
 class AccountFactory extends Factory
 {
@@ -19,7 +20,7 @@ class AccountFactory extends Factory
     public function definition(): array
     {
         return [
-            'currency' => Arr::random(CurrencyRate::SUPPORTED_CURRENCIES),
+            'currency' => Arr::random(Currency::SUPPORTED_CURRENCIES),
             'amount' => round(rand(100, 500000) / 10, 2),
         ];
     }

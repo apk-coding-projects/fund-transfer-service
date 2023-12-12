@@ -165,7 +165,7 @@ class FundTransferTransactionServiceTest extends TestCase
         $currencyCacheKey = join('_', ['CACHED_CURRENCY_RATES', $to, $from, $date]);
         Redis::shouldReceive('get')
             ->with($currencyCacheKey)
-            ->twice()
+            ->once()
             ->andReturn(json_encode($currencyRate->toArray()));
 
         $key = $this->getLockKey($request);

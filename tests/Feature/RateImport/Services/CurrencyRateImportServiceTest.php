@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Http;
 use src\CurrencyRates\Models\CurrencyRate;
 use src\CurrencyRates\RateImport\Services\CurrencyRateImportService;
+use src\CurrencyRates\Structures\Currency;
 use Tests\Feature\RateImport\Helpers\RateImportHelper;
 use Tests\TestCase;
 
@@ -42,7 +43,7 @@ class CurrencyRateImportServiceTest extends TestCase
 
     public function testImport_withSupportedCurrencies_ratesSaved(): void
     {
-        foreach (CurrencyRate::SUPPORTED_CURRENCIES as $currency) {
+        foreach (Currency::SUPPORTED_CURRENCIES as $currency) {
             Http::fake(
                 [
                     self::HTTP_API_EXCHANGERATE_URL => Http::response(
@@ -77,7 +78,7 @@ class CurrencyRateImportServiceTest extends TestCase
     {
         return [
             ['no_currencies' => []],
-            ['only_one_currency' => [CurrencyRate::CURRENCY_USD]],
+            ['only_one_currency' => [Currency::CURRENCY_USD]],
         ];
     }
 }

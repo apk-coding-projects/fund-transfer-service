@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 use src\Accounts\Models\Account;
 use src\CurrencyRates\Models\CurrencyRate;
+use src\CurrencyRates\Structures\Currency;
 use src\Transactions\Models\Transaction;
 
 class TransactionFactory extends Factory
@@ -14,7 +15,7 @@ class TransactionFactory extends Factory
 
     public function definition(): array
     {
-        $currency = Arr::random([CurrencyRate::CURRENCY_USD, CurrencyRate::CURRENCY_EUR, CurrencyRate::CURRENCY_NZD]);
+        $currency = Arr::random([Currency::CURRENCY_USD, Currency::CURRENCY_EUR, Currency::CURRENCY_NZD]);
 
         $sender = $this->faker->randomElement(Account::where('currency', $currency)->pluck('id'));
 
@@ -30,7 +31,7 @@ class TransactionFactory extends Factory
             'receiver_account_id' => $receiver,
             'currency' => $currency,
             'amount' => rand(10,150),
-            'status' => Arr::random(Transaction::STATUSES),
+            'status' => Arr::random([Transaction::STATUS_SUCCESS, Transaction::STATUS_FAILURE]),
         ];
     }
 }

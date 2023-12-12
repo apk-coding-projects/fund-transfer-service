@@ -8,6 +8,7 @@ use src\Accounts\Models\Account;
 use src\CurrencyRates\Exceptions\RateNotFoundException;
 use src\CurrencyRates\Models\CurrencyRate;
 use src\CurrencyRates\Services\CurrencyConversionService;
+use src\CurrencyRates\Structures\Currency;
 use src\Transactions\Exceptions\CurrencyNotSupportedException;
 use src\Transactions\Exceptions\NegativeAmountException;
 use src\Transactions\Exceptions\NotEnoughBalanceException;
@@ -40,7 +41,7 @@ class TransactionValidationService
      */
     private function validateCurrency(TransactionRequest $request, ?Account $receiverAccount): void
     {
-        if (!in_array($request->currency, CurrencyRate::SUPPORTED_CURRENCIES)) {
+        if (!in_array($request->currency, Currency::SUPPORTED_CURRENCIES)) {
             throw new CurrencyNotSupportedException();
         }
 

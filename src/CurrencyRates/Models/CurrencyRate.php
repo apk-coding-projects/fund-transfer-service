@@ -4,6 +4,7 @@ namespace src\CurrencyRates\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use src\CurrencyRates\Structures\Currency;
 
 /**
  * @property int $id
@@ -16,21 +17,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CurrencyRate extends Model
 {
-    public const CURRENCY_USD = 'USD';
-    public const CURRENCY_GBP = 'GBP';
-    public const CURRENCY_EUR = 'EUR';
-    public const CURRENCY_AUD = 'AUD';
-    public const CURRENCY_NZD = 'NZD';
-    public const CURRENCY_CAD = 'CAD';
-
-    public const SUPPORTED_CURRENCIES = [
-        self::CURRENCY_USD,
-        self::CURRENCY_GBP,
-        self::CURRENCY_EUR,
-        self::CURRENCY_AUD,
-        self::CURRENCY_NZD,
-        self::CURRENCY_CAD,
-    ];
 
     use HasFactory;
 

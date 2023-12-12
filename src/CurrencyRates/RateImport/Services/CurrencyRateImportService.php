@@ -9,6 +9,7 @@ use src\CurrencyRates\Models\CurrencyRate;
 use src\CurrencyRates\RateImport\Clients\ExchangerateClient;
 use src\CurrencyRates\RateImport\Structures\ExchangerateImportResponse;
 use src\CurrencyRates\Repositories\CurrencyRateRepository;
+use src\CurrencyRates\Structures\Currency;
 use Throwable;
 
 class CurrencyRateImportService
@@ -21,7 +22,7 @@ class CurrencyRateImportService
     ) {
     }
 
-    public function import(array $currenciesToImport = CurrencyRate::SUPPORTED_CURRENCIES, ?string $date = null): void
+    public function import(array $currenciesToImport = Currency::SUPPORTED_CURRENCIES, ?string $date = null): void
     {
         $date = $date ?: date(ExchangerateClient::DATE_FORMAT);
         Log::info("Import started for $date, currencies:" . join(',', $currenciesToImport));

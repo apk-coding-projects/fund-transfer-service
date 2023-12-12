@@ -7,6 +7,7 @@ namespace RateImport\Clients;
 use Illuminate\Support\Facades\Http;
 use src\CurrencyRates\Models\CurrencyRate;
 use src\CurrencyRates\RateImport\Clients\ExchangerateClient;
+use src\CurrencyRates\Structures\Currency;
 use Tests\Feature\RateImport\Helpers\RateImportHelper;
 use Tests\TestCase;
 
@@ -28,13 +29,13 @@ class ExchangerateClientTest extends TestCase
 
         $response = $this->client->getRates(
             date('Y-m-d'),
-            CurrencyRate::CURRENCY_USD,
-            CurrencyRate::SUPPORTED_CURRENCIES
+            Currency::CURRENCY_USD,
+            Currency::SUPPORTED_CURRENCIES
         );
 
         self::assertFalse($response->isSuccess);
         self::assertEmpty($response->rates);
-        self::assertEquals(CurrencyRate::CURRENCY_USD, $response->source);
+        self::assertEquals(Currency::CURRENCY_USD, $response->source);
         self::assertEquals(date('Y-m-d'), $response->date);
     }
 
@@ -45,14 +46,14 @@ class ExchangerateClientTest extends TestCase
 
         $response = $this->client->getRates(
             date('Y-m-d'),
-            CurrencyRate::CURRENCY_USD,
-            CurrencyRate::SUPPORTED_CURRENCIES
+            Currency::CURRENCY_USD,
+            Currency::SUPPORTED_CURRENCIES
         );
 
         self::assertTrue($response->isSuccess);
         self::assertNotEmpty($response->rates);
         self::assertEmpty(array_diff(array_values($clientFakeResponse['quotes']), array_values($response->rates)));
-        self::assertEquals(CurrencyRate::CURRENCY_USD, $response->source);
+        self::assertEquals(Currency::CURRENCY_USD, $response->source);
         self::assertEquals(date('Y-m-d'), $response->date);
     }
 }

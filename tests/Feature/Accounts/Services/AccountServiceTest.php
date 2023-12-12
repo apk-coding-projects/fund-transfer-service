@@ -11,7 +11,7 @@ use src\Transactions\Exceptions\NotEnoughBalanceException;
 use Tests\Feature\Helpers\AccountHelper;
 use Tests\TestCase;
 
-class AccountServiceIntegrationTest extends TestCase
+class AccountServiceTest extends TestCase
 {
     use DatabaseMigrations;
 
