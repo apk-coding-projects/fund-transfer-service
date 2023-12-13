@@ -19,7 +19,7 @@ class TransactionSeeder extends Seeder
         }
 
         Transaction::factory()
-            ->count(1000)
+            ->count(500)
             ->create();
     }
 }

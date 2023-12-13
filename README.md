@@ -89,17 +89,10 @@ OR for detached mode
 ./vendor/bin/sail up -d
 ```
 
-3. To run Laravel commands lets use one of the containers. After this, you will be inside one of the containers, and you
-   can run all Laravel commands there
+3. Generate laravel app key
 
 ```
-docker compose exec laravel.test bash
-```
-
-4. Generate laravel app key
-
-```
-php artisan key:generate
+./vendor/bin/sail artisan key:generate
 ```
 
 Project should be up and running! Congratulations!
@@ -112,7 +105,7 @@ If you just started the project, you won't have any data in the database. First 
 tables:
 
 ```
-php artisan migrate
+./vendor/bin/sail artisan migrate
 ```
 
 Now you have the tables without data. If you want to seed the date we have 4 seeders ready for you
@@ -120,25 +113,25 @@ Now you have the tables without data. If you want to seed the date we have 4 see
 1. Will seed only customers table - 15 records. No accounts, no transactions.
 
 ```
-php artisan db:seed --class=ClientSeeder
+./vendor/bin/sail artisan db:seed --class=ClientSeeder
 ```
 
 2. Seeds 50 clients with random amount of accounts.
 
 ```
-php artisan db:seed --class=ClientsAccountsSeeder
+./vendor/bin/sail artisan db:seed --class=ClientsAccountsSeeder
 ```
 
-3. Seeds 1000 transactions, randomly assigned to accounts
+3. Seeds 500 transactions, randomly assigned to accounts. This can take up to 2-5 min.
 
 ```
-php artisan db:seed --class=TransactionSeeder
+./vendor/bin/sail artisan db:seed --class=TransactionSeeder
 ```
 
 4. Seeds Currency rates for past 15 days. If rates are not seeded, code will use live rates.
 
 ```
-php artisan db:seed --class=RatesSeeder
+./vendor/bin/sail artisan db:seed --class=RatesSeeder
 ```
 
 ## API
