@@ -170,16 +170,13 @@ Host: localhost
 
 ## Tests
 
-For running tests use
-
-```
-docker compose exec laravel.test bash
-```
-
-and execute this inside container to run phpunit tests
+To run phpunit tests use this command
 
 ```
 ./vendor/bin/phpunit
+OR
+./vendor/bin/sail artisan test --testsuite=Unit
+./vendor/bin/sail artisan test --testsuite=Feature
 ```
 
 In case you want to generate and check test reports, run:
