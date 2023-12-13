@@ -19,7 +19,7 @@ class AccountController extends BaseController
     public function transactions(Request $request, int $accountId): array
     {
         try {
-            $limit = intval($request->input('limit', 0));
+            $limit = is_null($request->input('limit')) ? null : (intval($request->input('limit')));
             $offset = intval($request->input('offset', 0));
 
             if ($limit === 0) {

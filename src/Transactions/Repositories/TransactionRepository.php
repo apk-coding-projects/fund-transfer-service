@@ -13,7 +13,7 @@ class TransactionRepository
         $transaction->save();
     }
 
-    public function getPaginatedByAccountId(int $accountId, int $limit = 0, int $offset = 0): array
+    public function getPaginatedByAccountId(int $accountId, ?int $limit = 0, int $offset = 0): array
     {
         $query = Transaction::where('receiver_account_id', $accountId)
             ->orWhere('sender_account_id', $accountId)

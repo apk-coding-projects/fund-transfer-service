@@ -16,13 +16,5 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Client::factory()
-            ->count(50)
-            ->has(Account::factory()->count(rand(1, 5)))
-            ->create();
-
-        Client::factory()
-            ->count(15)
-            ->create();
     }
 }
