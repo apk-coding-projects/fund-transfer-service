@@ -10,22 +10,22 @@ accounts and historical currency rates for currency conversions. It has 3 HTTP e
 Application supports these currencies: USD, GBP, EUR,
 AUD, NZD, CAD.
 
-Main application lies inside `src` folder, however there are some supportive classes in laravel structure like under
+Main application lies inside `src` folder, however there are some Laravel related things under
 app,database,tests folders.
 
 ![Database Schema](storage/documentation/database_schema.png)
 
 **Note:**
 
-1. We save currency rates in DB table so we are not dependant on 3rd party software. You can check rate retrieval
+1. We save currency rates in DB table, so we are not dependent on 3rd party software. You can check rate retrieval
    mechanism: ``\src\CurrencyRates\Services\CurrencyConversionService::getRate``
 2. We have ``accounts_history`` table to save all changes made to accounts. It makes life a lot easier when we need to
    debug/tell what exact amount customer had at X point in the past
 
 ## Project installation
 
-Setup will provide needed guidelines to set up project on you machine. I suggest using Mac/Linux, but commands for
-Windows will also be provided
+Setup will provide needed guidelines to set up project on you machine. I strongly suggest using Mac/Linux, but commands
+Windows instructions will also be provided
 
 1. Install Git if it is missing https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 2. Install Docker Desktop https://www.docker.com/products/docker-desktop/
@@ -42,9 +42,11 @@ desktop)
 
 ```
 git clone https://github.com/apk-coding-projects/fund-transfer-service.git
+
+cd fund-transfer-service
 ```
 
-Navigate to created fund-transfer-service directory (cloned project directory) and execute following commands from
+Navigate to created **fund-transfer-service** directory (cloned project directory) and execute following commands from
 project root
 
 2. Copy .env.example to create environment file with credentials
@@ -53,7 +55,7 @@ project root
 cp .env.example .env
 ```
 
-Navigate to [Exchangerate.host](https://exchangerate.host/) and register. Then you can get your API key from dashboard.
+In browser open [Exchangerate.host](https://exchangerate.host/) and register. Then you can get your API key from dashboard.
 
 3. Copy the key, open .env file and assign the key value to `EXCHANGERATE_API_KEY` variable in .env file
 
