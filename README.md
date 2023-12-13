@@ -129,7 +129,7 @@ php artisan db:seed --class=ClientSeeder
 php artisan db:seed --class=ClientsAccountsSeeder
 ```
 
-3. Seeds 5000 transactions, randomly assigned to accounts
+3. Seeds 1000 transactions, randomly assigned to accounts
 
 ```
 php artisan db:seed --class=TransactionSeeder
