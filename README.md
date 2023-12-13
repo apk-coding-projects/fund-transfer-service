@@ -104,7 +104,7 @@ php artisan key:generate
 
 Project should be up and running! Congratulations!
 If you want to make sure all is fine - check that docker containers are running, and you can visit
-[localhost](http://localhost:8000/) and see Laravel default home page
+[localhost](http://localhost:80/) and see Laravel default home page
 
 ## Setting up data
 
