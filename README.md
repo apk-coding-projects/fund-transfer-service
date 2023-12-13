@@ -173,7 +173,7 @@ Host: localhost
 To run phpunit tests use this command
 
 ```
-./vendor/bin/phpunit
+./vendor/bin/sail phpunit
 OR
 ./vendor/bin/sail artisan test --testsuite=Unit
 ./vendor/bin/sail artisan test --testsuite=Feature
@@ -182,7 +182,7 @@ OR
 In case you want to generate and check test reports, run:
 
 ```
-./vendor/bin/phpunit --coverage-html ./reports
+./vendor/bin/sail phpunit --coverage-html ./reports
 ```
 
 It will generate reports in the root directory in folder `reports`
